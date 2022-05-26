@@ -1,0 +1,29 @@
+﻿import xlrd
+from opencc import OpenCC
+from py2neo import Graph,Node,Relationship
+colNum = 109
+rowNum = 2122
+data = xlrd.open_workbook("Taiwan.xls")
+table = data.sheets()[0]
+N_row = table.nrows
+FoodList = []
+#test = table.row_values(3,start_colx = 1,end_colx = colNum)
+#print(test)
+title = table.row_values(1,start_colx = 0,end_colx = colNum)
+for i in range(0,colNum):
+    title[i] = OpenCC('t2s').convert(title[i])
+print(title)
+for i in range(3,rowNum):
+    nowRow = table.row_values(i,start_colx = 0,end_colx = colNum)
+    for j in range(0,colNum):
+        if(type(nowRow[j]) == str):
+            nowRow[j] = OpenCC('t2s').convert(nowRow[j])
+    print(nowRow)
+    nowDic = {}
+    for j in range (0,colNum):
+        nowDic[title[j]] = nowRow[j]
+    FoodList.append(nowDic)
+print(FoodList[56])
+links = []
+
+graph = Graph('address',username = 'user',password = 'pass')
