@@ -22,3 +22,7 @@ print(FoodList[56])
 links = []
 
 graph = Graph('bolt://nas.boeing773er.site:7687')
+testNode = Node('Food',name = FoodList[56]['样品名称'])
+testNode['蛋白质'] = '0.03'
+graph.create(testNode)
+graph.push(testNode)
