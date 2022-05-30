@@ -1,5 +1,5 @@
 import pandas as pd
-writer = pd.ExcelWriter('Normalized_.xlsx')
+writer = pd.ExcelWriter('Normalized.xlsx')
 items = ['谷物类','淀粉类','坚果及种子类','水果类','蔬菜类','藻类','菇类','豆类','糕饼点心类','肉类','鱼贝类','蛋类','乳品类','油脂类','糖类','饮料类','调味料及香辛料类','加工调理食品及其他类']
 
 def minMaxNormalization(df):
@@ -18,10 +18,7 @@ for i in items:
     normalized.to_excel(writer,sheet_name=i)
     writer.save()
 writer.close()
-"""data = pd.read_excel('STaiwan.xlsx')
-normalized.insert(column='样品名称',loc=0,value=data['样品名称'])
-normalized.insert(column='食品分类',loc=0,value=data['食品分类'])
-normalized.insert(column='样品编号',loc=0,value=data['样品编号'])"""
+
 
 
 
