@@ -8,4 +8,11 @@ def minMaxNormalization(df):
     return (df-df.min())/(df.max()-df.min())
 
 normalized = minMaxNormalization(data)
+data = pd.read_excel('STaiwan.xlsx')
+normalized.insert(column='样品名称',loc=0,value=data['样品名称'])
+normalized.insert(column='食品分类',loc=0,value=data['食品分类'])
+normalized.insert(column='样品编号',loc=0,value=data['样品编号'])
+
+
 normalized.to_excel('Normalized.xlsx')
+
