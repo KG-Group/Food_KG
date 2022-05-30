@@ -11,14 +11,17 @@ FoodList = []
 #print(test)
 title = table.row_values(1,start_colx = 0,end_colx = colNum)
 #print(title)
-for i in range(3,rowNum):
+for i in range(2,rowNum):
     nowRow = table.row_values(i,start_colx = 0,end_colx = colNum)
     #print(nowRow)
     nowDic = {}
     for j in range (0,colNum):
-        nowDic[title[j]] = nowRow[j]
+        if(nowRow[j] != ''):
+            nowDic[title[j]] = nowRow[j]
+        else:
+            nowDic[title[j]] = 0
     FoodList.append(nowDic)
-print(FoodList[56])
+print(FoodList[1])
 links = []
 
 graph = Graph('bolt://nas.boeing773er.site:7687')
