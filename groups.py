@@ -13,14 +13,11 @@ def count(i):
 for i in items:
     data = pd.read_excel('Normalized.xlsx',sheet_name=i)
     to = pd.DataFrame()
-    to_ = data
     res = pd.DataFrame()
     to = data.drop(data.columns[:4],axis=1)
     for j in range(len(to.columns)):
         count(j)
-    res.insert(column='样品名称',loc=0,value=to_['样品名称'])
-    res.insert(column='食品分类',loc=0,value=to_['食品分类'])
-    res.insert(column='样品编号',loc=0,value=to_['样品编号'])
+    res.insert(column='',loc=0,value=range(20))
     res.to_excel(excel_writer=writer,sheet_name=i,index=False)
     writer.save()
 writer.close()
