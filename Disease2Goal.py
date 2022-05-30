@@ -1,11 +1,18 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 import xlrd
 
-def readDataJKMB2YYCF(filepath):
+# 函数 readDataJKMB2YYCF(filepath)
+# 返回值为多个dict，可使用此方式获取7种病与对应成份的dict
+# 各病dict值定义如下：
+## 多吃：1;   无关：0;  少吃：-1
+# 例如： tnb['粗脂肪(g)'] 值为 -1，表示 “糖尿病” 少吃 '粗脂肪(g)'
+def readDataJKMB2YYCF():
+    filepath = "健康目标-营养成分（多吃or少吃）20220530.xls"
+
     wb = xlrd.open_workbook(filepath)
     sh = wb.sheet_by_name('Sheet1')
-    print(sh.nrows)   # 有效数据行数
-    print(sh.ncols)   # 有效数据列数
+    #print(sh.nrows)   # 有效数据行数
+    #print(sh.ncols)   # 有效数据列数
        
     title = sh.row_values(1,start_colx = 2,end_colx = sh.ncols)
     
@@ -58,7 +65,7 @@ def readDataJKMB2YYCF(filepath):
       else:
         gxb[title[i]] = 0
     
-    # 冠心病6
+    # 动脉硬化6
     data = sh.row_values(6,start_colx = 2,end_colx = sh.ncols)
     for i in range(30):
       if data[i] == "+":
@@ -97,17 +104,21 @@ def readDataJKMB2YYCF(filepath):
     print(len(gxz))
     print(len(fpz))'''
 
-    return tnb, gxy, tnbgxy, gxb, dmyh, gxz, fpz
+    diseases = []
+    diseases.append(tnb)
+    diseases.append(gxy)
+    diseases.append(tnbgxy)
+    diseases.append(gxb)
+    diseases.append(dmyh)
+    diseases.append(gxz)
+    diseases.append(fpz)
+
+    return diseases
 
 
 
 
-# example
-filepath = "健康目标-营养成分（多吃or少吃）20220530.xls"    # 存储“健康目标-营养成分多吃少吃”的文件
+## example
+# filepath = "健康目标-营养成分（多吃or少吃）20220530.xls"    # 存储“健康目标-营养成分多吃少吃”的文件
 
-# 函数 readDataJKMB2YYCF(filepath)
-# 返回值为多个dict，可使用此方式获取7种病与对应成份的dict
-# 各病dict值定义如下：
-## 多吃：1;   无关：0;  少吃：-1
-# 例如： tnb['粗脂肪(g)'] 值为 -1，表示 “糖尿病” 少吃 '粗脂肪(g)'
-tnb, gxy, tnbgxy, gxb, dmyh, gxz, fpz = readDataJKMB2YYCF(filepath)     
+# diseases = readDataJKMB2YYCF(filepath)     # 调用函数，存入7种病的dict
