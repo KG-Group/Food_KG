@@ -9,4 +9,4 @@ graph = Graph('bolt://nas.boeing773er.site:7687')
 
 data = pd.read_excel("STaiwan.xlsx")
 data.fillna(value=0.0,inplace=True)
-print(data.iloc[1])
+print(data.iloc[1]) 
