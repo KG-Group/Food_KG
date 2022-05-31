@@ -1,5 +1,4 @@
-﻿from dataclasses import dataclass
-import xlrd
+﻿import xlrd
 
 # 函数 readDataJKMB2YYCF(filepath)
 # 返回值为多个dict，可使用此方式获取7种病与对应成份的dict
@@ -7,7 +6,7 @@ import xlrd
 ## 多吃：1;   无关：0;  少吃：-1
 # 例如： tnb['粗脂肪(g)'] 值为 -1，表示 “糖尿病” 少吃 '粗脂肪(g)'
 def readDataJKMB2YYCF():
-    filepath = "健康目标-营养成分（多吃or少吃）20220530.xls"
+    filepath = "document\健康目标-营养成分（多吃or少吃）20220530.xls"
 
     wb = xlrd.open_workbook(filepath)
     sh = wb.sheet_by_name('Sheet1')
@@ -85,7 +84,7 @@ def readDataJKMB2YYCF():
       else:
         gxz[title[i]] = 0
     
-    # 高血脂8
+    # 肥胖症8
     data = sh.row_values(8,start_colx = 2,end_colx = sh.ncols)
     for i in range(30):
       if data[i] == "+":
