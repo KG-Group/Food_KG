@@ -5,7 +5,7 @@ from Disease2Goal import readDataJKMB2YYCF
 colNum = 109
 rowNum = 2122
 
-data = xlrd.open_workbook("STaiwan.xls")
+data = xlrd.open_workbook("./document/STaiwan.xls")
 table = data.sheets()[0]
 N_row = table.nrows
 FoodList = []
@@ -68,16 +68,27 @@ print(DiseasesGoal)
 
 graph = Graph('bolt://nas.boeing773er.site:7687')
 for goal in Goals:
-    GNode = Node('Goal',name = goal)
-    graph.create(GNode)
-    graph.push(GNode)
+    if(goal.startswith('高')):
+        GNode = Node('HigherGoal',name = goal)
+        graph.create(GNode)
+        graph.push(GNode)
+    else:
+        GNode = Node('LowerGoal',name = goal)
+        graph.create(GNode)
+        graph.push(GNode)
 for key in DiseasesGoal.keys():
     DNode = Node('Disease',name = key)
     graph.create(DNode)
     graph.push(DNode)
     for goal in DiseasesGoal[key]:
         matcher = NodeMatcher(graph)
-        GNode = matcher.match("Goal",name = goal).first()
-        Edge = Relationship(DNode,"包含",GNode)
+        HGNode = matcher.match("HigherGoal",name = goal).first()
+        LGNode = matcher.match("LowerGoal",name = goal).first()
+        GNode
+        if(HGNode):
+            GNode = HGNode
+        elif(LGNode):
+            GNode = LGNode
+        Edge = Relationship(DNode,"应食用",GNode)
         graph.create(Edge)
         graph.push(Edge)
