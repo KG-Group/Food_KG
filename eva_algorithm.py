@@ -119,16 +119,3 @@ def get_food():
     # print(disease_food)
     return disease_food
 
-
-
-#
-# dict_by_cat = {}
-# for i in range(len(FoodList)):
-#     if dict_by_cat.get(FoodList[i]['食品分类']) is None:
-#         dict_by_cat[FoodList[i]['食品分类']] = []
-#     dict_by_cat[FoodList[i]['食品分类']].append(FoodList[i])
-#
-# for key in dict_by_cat.keys():
-#     temp_list = dict_by_cat[key]
-#     for item in temp_list:
-#         for
