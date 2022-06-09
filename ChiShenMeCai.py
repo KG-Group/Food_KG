@@ -273,8 +273,13 @@ class ChiShenMe:
 
 
 if __name__ == "__main__":
-    csm = ChiShenMe(22, 25, ['红烧排骨米线'], [300])
-    dish_name, res_x = csm.getChiShenMe(5, [0, 0, 0, 0])   # 传入其余 已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
+    csm = ChiShenMe(22, 25, ['红烧排骨米线'], [300])        # 参数1：年龄
+                                                            # 参数2：bmi
+                                                            # 参数3：已吃菜的list
+                                                            # 参数4：已吃菜对应重量的list（克）
+    
+    dish_name, res_x = csm.getChiShenMe(5, [0, 0, 0, 0])    # 参数1：推荐的菜数
+                                                            # 参数2：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
     
 
 
