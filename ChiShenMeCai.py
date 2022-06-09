@@ -144,7 +144,7 @@ class ChiShenMe:
         i = 0
         for cai in cai_li:
             if cai in dish_name:
-                nu_YiChi = nu_YiChi + nu_cai[:, dish_name.index(cai)] * cai_weight[i] / 300.0
+                nu_YiChi = nu_YiChi + nu_cai[:, dish_name.index(cai)] * cai_weight[i] / 200.00
             i += 1
         return nu_YiChi
 
@@ -273,7 +273,7 @@ class ChiShenMe:
 
         res_x = []
         for i in res.x:
-            res_x.append(i * 300)       # 化为 300g
+            res_x.append(i * 200.00)       # 化为 300g
         
         
         low_li = []
@@ -318,12 +318,12 @@ if __name__ == "__main__":
 
 
 def getChiShenMeCai_all(age, bmi, cai_name_li, cai_weight_li, cai_num, else_nu_Yichi):
-    csm = ChiShenMe(age, bmi, cai_name_li, cai_weight_li)   # 参数1：年龄
+    csm = ChiShenMe(age, bmi)   # 参数1：年龄
                                                             # 参数2：bmi
                                                             # 参数3：已吃菜的list
                                                             # 参数4：已吃菜对应重量的list（克）
 
-    return csm.getChiShenMe(cai_num, else_nu_Yichi)         # 参数5：推荐的菜数
+    return csm.getChiShenMe(cai_name_li, cai_weight_li, cai_num, else_nu_Yichi)         # 参数5：推荐的菜数
                                                             # 参数6：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
 
         
@@ -406,6 +406,6 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 # [蛋白质，脂肪，胆固醇，CHO]
 #csm = ChiShenMe(22, 25)
 # print(csm.getNu_YingChi()) # 打印营养目标
-#dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 4, [20, 10, 0, 100])
-#print(dish_name)
-#print(res_x)
+dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 10, [20, 10, 0, 100])
+print(dish_name)
+print(res_x)
