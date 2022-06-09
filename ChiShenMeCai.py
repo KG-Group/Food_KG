@@ -295,7 +295,14 @@ if __name__ == "__main__":
 
 
 
+def getChiShenMeCai_all(age, bmi, cai_name_li, cai_weight_li, cai_num, else_nu_Yichi):
+    csm = ChiShenMe(age, bmi, cai_name_li, cai_weight_li)   # 参数1：年龄
+                                                            # 参数2：bmi
+                                                            # 参数3：已吃菜的list
+                                                            # 参数4：已吃菜对应重量的list（克）
 
+    return csm.getChiShenMe(cai_num, else_nu_Yichi)         # 参数5：推荐的菜数
+                                                            # 参数6：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
 
         
     
