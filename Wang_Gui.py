@@ -203,7 +203,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         pass
 
     def fun(self):
-        print('successful test!')
+        breakfast_nutrition = "蛋白质: "+str(20)+"\n脂肪: "+str(10)+"\n胆固醇: "+str(0.02)+"\n碳水化合物: "+str(100)
+        self.textEditBreakfast2.setText(breakfast_nutrition)
 
     def fun1(self,i):
         print(i)
@@ -243,15 +244,26 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
 
         csm = ChiShenMeCai.ChiShenMe(age, bmi, cai_name_li, cai_weight_li)
-        li1,li2 =  csm.getChiShenMe(3, [12, 8, 0.1, 100])
-        dinner = str('')
-        for i in range(len(li1)):
-            dinner += str(li1[i])
-            dinner += ' '
-            dinner += str(li2[i])
-            dinner += '\n'
-        self.textEditSupper.setText(dinner)
+        li1,li2,li3=  csm.getChiShenMe(4, [20, 10, 0, 100])
         
+        supper = str('')
+        lunch_nutrition = str('您摄入的营养是')
+        
+        for i in range(len(li1)):
+            supper += str(li1[i])
+            supper += ' '
+            supper += str(li2[i])
+            supper += '\n'
+        self.textEditSupper.setText(supper)
+
+        
+        lunch_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
+        
+    
+            
+        self.textEditSupper.setText(supper)
+        self.textEditLunch2.setText(lunch_nutrition)
+
 
         #return cai_name_li, cai_weight_li
 
