@@ -264,11 +264,21 @@ class ChiShenMe:
         for i in res.x:
             res_x.append(i * 300)       # 化为 100g
         
-        i = 0
+
         for i in range(cai_num):
             print(dish_name[i] + '\t' + str(res_x[i]) + '\tg')
         
-        return dish_name, res_x
+        low_li = []
+        new_res_x = []
+        new_dish_name = []
+        i = 0
+        for chi in res_x:
+            if chi >= 50:
+                new_dish_name.append(dish_name[i])
+                new_res_x.append(chi)
+            i += 1
+        
+        return new_dish_name, new_res_x
         
 
 
@@ -278,9 +288,10 @@ if __name__ == "__main__":
                                                             # 参数3：已吃菜的list
                                                             # 参数4：已吃菜对应重量的list（克）
     
-    dish_name, res_x = csm.getChiShenMe(5, [0, 0, 0, 0])    # 参数1：推荐的菜数
+    dish_name, res_x = csm.getChiShenMe(3, [0, 0, 0, 0])    # 参数1：推荐的菜数
                                                             # 参数2：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
-    
+    print(dish_name)
+    print(res_x)
 
 
 
