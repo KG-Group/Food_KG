@@ -7,11 +7,11 @@ from py2neo import Node, Relationship, Graph, NodeMatcher, RelationshipMatcher
 
 class ChiShenMe:
     # cai_weight_li 中单位为 克
-    def __init__(self, age, bmi):
+    def __init__(self, age, bmi, cai_name_li, cai_weight_li):
         self.age = age
         self.bmi = bmi
-        '''self.cai_name_li = cai_name_li
-        self.cai_weight_li = cai_weight_li'''
+        self.cai_name_li = cai_name_li
+        self.cai_weight_li = cai_weight_li
         self.graph = Graph('bolt://nas.boeing773er.site:7687')
 
     # 已经吃了什么菜
@@ -19,15 +19,13 @@ class ChiShenMe:
 
     # 根据身高、体重、BMI查询，这个人应该摄入多少营养成分
     # -> 相减得到：每种营养成分剩余摄入量
-    '''age = 20
+    age = 20
     h = 160
     w = 70
-    bmi = 20'''
+    bmi = 20
 
     # [能量，蛋白质，脂肪，胆固醇，CHO]
-    def getNu_YingChi(self):
-        age, bmi = self.age, self.bmi
-
+    def getNu(self, age, bmi):
         node_matcher = NodeMatcher(self.graph)
         relation_matcher = RelationshipMatcher(self.graph)
         nl = dbz = zf = dgc = cho = 0
@@ -150,13 +148,9 @@ class ChiShenMe:
 
     #def getNu_YouChiLe(self, dish_name, cai_weight):
 
-    # def getNu_YingChi()
-    
-    # 外部调用的函数
-    def getChiShenMe(self, cai_name_li, cai_weight_li, cai_num, else_nu_Yichi):
-        self.cai_name_li = cai_name_li
-        self.cai_weight_li = cai_weight_li
 
+    # 外部调用的函数
+    def getChiShenMe(self, cai_num, else_nu_Yichi):
         dish_name, nu_cai = self.getCai()
 
         # 已吃-营养成分向量（4）
@@ -164,7 +158,7 @@ class ChiShenMe:
         nu_WuFan = nu_YiChi
         nu_YiChi = nu_YiChi + np.array(else_nu_Yichi)
         # 应吃-营养成分向量（5）
-        nu_YingChi = self.getNu_YingChi()  # age, bmi
+        nu_YingChi = self.getNu(self.age, self.bmi)  # age, bmi
 
         # 设能量
         # nl = nu_YingChi[0]
@@ -180,9 +174,9 @@ class ChiShenMe:
         c = nu_cai / nu_Sheng
         c = np.dot(np.ones((1, 4)), c)      # 将每列加和在一起
         # 不等式未知量的系数矩阵
-        A_ub = nu_cai * -1
+        A_ub = nu_cai #* -1
         # 不等式的右边
-        B_ub = nu_Sheng * -1
+        B_ub = nu_Sheng #* -1
         '''print("c")
         print(c.shape)
         print("A_ub")
@@ -259,9 +253,9 @@ class ChiShenMe:
         c = nu_cai / nu_Sheng
         c = np.dot(np.ones((1, 4)), c)      # 将每列加和在一起
         # 不等式未知量的系数矩阵
-        A_ub = nu_cai * -1
+        A_ub = nu_cai #* -1
         # 不等式的右边
-        B_ub = nu_Sheng * -1
+        B_ub = nu_Sheng #* -1
         '''print("c")
         print(c.shape)
         print("A_ub")
@@ -303,15 +297,13 @@ class ChiShenMe:
 
 
 if __name__ == "__main__":
-    csm = ChiShenMe(22, 25)     # 参数1：年龄
-                                # 参数2：bmi
-                                                            
+    csm = ChiShenMe(22, 25, ['红烧排骨米线'], [300])        # 参数1：年龄
+                                                            # 参数2：bmi
+                                                            # 参数3：已吃菜的list
+                                                            # 参数4：已吃菜对应重量的list（克）
     
-    dish_name, res_x, nu_WuFan, nu_YingChi = csm.getChiShenMe(['红烧排骨米线'], [300], 4, [0, 0, 0, 0])    
-                                                            # 参数1：已吃菜的list
-                                                            # 参数2：已吃菜对应重量的list（克）
-                                                            # 参数3：推荐的菜数
-                                                            # 参数4：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
+    dish_name, res_x, nu_WuFan, nu_YingChi = csm.getChiShenMe(3, [0, 0, 0, 0])    # 参数1：推荐的菜数
+                                                            # 参数2：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
     # print(dish_name)
     # print(res_x)
 
@@ -404,8 +396,6 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 
 # 仅测试 getNu_YiChi 功能用}
 # [蛋白质，脂肪，胆固醇，CHO]
-#csm = ChiShenMe(22, 25)
-# print(csm.getNu_YingChi()) # 打印营养目标
-#dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 4, [20, 10, 0, 100])
-#print(dish_name)
-#print(res_x)
+dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 4, [20, 10, 0, 100])
+print(dish_name)
+print(res_x)
