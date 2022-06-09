@@ -145,13 +145,17 @@ class ChiShenMe:
             i += 1
         return nu_YiChi
 
+    #def getNu_YouChiLe(self, dish_name, cai_weight):
+
+
     # 外部调用的函数
     def getChiShenMe(self, cai_num, else_nu_Yichi):
         dish_name, nu_cai = self.getCai()
 
         # 已吃-营养成分向量（4）
         nu_YiChi = self.getNu_YiChi(self.cai_name_li, nu_cai, dish_name, self.cai_weight_li)   # 已经吃了的营养成分量 (能量)[蛋白质，脂肪，胆固醇，CHO]
-        nu_YiChi = nu_YiChi + np.array(else_nu_Yichi) / 300
+        nu_WuFan = nu_YiChi
+        nu_YiChi = nu_YiChi + np.array(else_nu_Yichi)
         # 应吃-营养成分向量（5）
         nu_YingChi = self.getNu(self.age, self.bmi)  # age, bmi
 
@@ -172,14 +176,14 @@ class ChiShenMe:
         A_ub = nu_cai * -1
         # 不等式的右边
         B_ub = nu_Sheng * -1
-        print("c")
+        '''print("c")
         print(c.shape)
         print("A_ub")
-        print(A_ub.shape)
+        print(A_ub.shape)'''
         res=op.linprog(c, A_ub, B_ub)   #, bounds=(x1,x2,x3))
-        print(res)
+        '''print(res)
         print("---------")
-        print(res.x) # .reshape(1,nu_cai.shape[1])
+        print(res.x) # .reshape(1,nu_cai.shape[1])'''
 
 
         max_no_li = []
@@ -199,8 +203,8 @@ class ChiShenMe:
             max_no_li.append(max_no)
             res_x[max_no] = 0
 
-        for i in max_no_li:
-            print(dish_name[i])
+        #for i in max_no_li:
+            # print(dish_name[i])
         
 
         # 更新 nu_cai 矩阵，仅使用三个菜进行计算
@@ -262,7 +266,7 @@ class ChiShenMe:
 
         res_x = []
         for i in res.x:
-            res_x.append(i * 300)       # 化为 100g
+            res_x.append(i * 300)       # 化为 300g
         
 
         for i in range(cai_num):
@@ -278,7 +282,16 @@ class ChiShenMe:
                 new_res_x.append(chi)
             i += 1
         
-        return new_dish_name, new_res_x
+        print("已吃")
+        print(nu_YiChi)
+        print("应吃")
+        print(nu_YingChi)
+        print("剩余")
+        print(nu_Sheng)
+        print("又吃了")
+
+        
+        return new_dish_name, new_res_x, nu_WuFan
         
 
 
@@ -381,4 +394,7 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 [100, 50]'''
 
 # 仅测试 getNu_YiChi 功能用}
-
+# [蛋白质，脂肪，胆固醇，CHO]
+# dish_name, res_x = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [50, 50], 4, [20, 10, 0, 100])
+# print(dish_name)
+# print(res_x)
