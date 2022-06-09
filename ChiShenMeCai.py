@@ -116,13 +116,14 @@ class ChiShenMe:
 
             dbz = float(dish_dict['粗蛋白(g)'])
 
-            zf = float(dish_dict['脂肪酸P总量(mg)']/1000)
+            zf = float(dish_dict['粗脂肪(g)'])
+            '''zf += float(dish_dict['脂肪酸P总量(mg)']/1000)
+            zf += float(dish_dict['其他脂肪酸(mg)']/1000)
             zf += float(dish_dict['脂肪酸S总量(mg)']/1000)
             zf += float(dish_dict['脂肪酸M总量(mg)']/1000)
             zf += float(dish_dict['反式脂肪(mg)']/1000)
-            zf += float(dish_dict['粗脂肪(g)'])
-            zf += float(dish_dict['饱和脂肪(g)'])
-            zf += float(dish_dict['其他脂肪酸(mg)']/1000)
+            zf += float(dish_dict['饱和脂肪(g)'])'''
+            
 
             dgc = float(dish_dict['胆固醇(mg)']/1000)
 
@@ -216,9 +217,9 @@ class ChiShenMe:
         '''nu_cai0 = nu_cai[:, max_no_li[0]]
         nu_cai1 = nu_cai[:, max_no_li[1]]
         nu_cai2 = nu_cai[:, max_no_li[2]]'''
-        print(nu_cai.shape)
+        # print(nu_cai.shape)
         nu_cai = nu_cai[:, nu_cai_shape_y:]
-        print(nu_cai.shape)
+        # print(nu_cai.shape)
         
 
         '''print("??????????????????????????")
@@ -238,10 +239,10 @@ class ChiShenMe:
             dish_name.append(dish_name[max_no_li[i]])
             # nu_cai_new.append(nu_cai[:, max_no_li[i]])
         
-        print("dish_name:")
-        print(len(dish_name))
+        # print("dish_name:")
+        # print(len(dish_name))
         dish_name = dish_name[dish_name_len:]
-        print(len(dish_name))
+        # print(len(dish_name))
 
 
 
@@ -255,10 +256,10 @@ class ChiShenMe:
         A_ub = nu_cai * -1
         # 不等式的右边
         B_ub = nu_Sheng * -1
-        print("c")
+        '''print("c")
         print(c.shape)
         print("A_ub")
-        print(A_ub.shape)
+        print(A_ub.shape)'''
         res=op.linprog(c, A_ub, B_ub)   #, bounds=(x1,x2,x3))
         print(res)
         print("---------")
@@ -268,9 +269,6 @@ class ChiShenMe:
         for i in res.x:
             res_x.append(i * 300)       # 化为 300g
         
-
-        for i in range(cai_num):
-            print(dish_name[i] + '\t' + str(res_x[i]) + '\tg')
         
         low_li = []
         new_res_x = []
@@ -282,6 +280,9 @@ class ChiShenMe:
                 new_res_x.append(chi)
             i += 1
         
+        for i in range(cai_num):
+            print(dish_name[i] + '\t' + str(res_x[i]) + '\tg')
+        
         print("已吃")
         print(nu_YiChi)
         print("应吃")
@@ -291,7 +292,7 @@ class ChiShenMe:
         print("又吃了")
 
         
-        return new_dish_name, new_res_x, nu_WuFan
+        return new_dish_name, new_res_x, nu_WuFan, nu_YingChi
         
 
 
@@ -301,10 +302,10 @@ if __name__ == "__main__":
                                                             # 参数3：已吃菜的list
                                                             # 参数4：已吃菜对应重量的list（克）
     
-    dish_name, res_x, nu_WuFan = csm.getChiShenMe(3, [0, 0, 0, 0])    # 参数1：推荐的菜数
+    dish_name, res_x, nu_WuFan, nu_YingChi = csm.getChiShenMe(3, [0, 0, 0, 0])    # 参数1：推荐的菜数
                                                             # 参数2：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
-    print(dish_name)
-    print(res_x)
+    # print(dish_name)
+    # print(res_x)
 
 
 
@@ -395,6 +396,6 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 
 # 仅测试 getNu_YiChi 功能用}
 # [蛋白质，脂肪，胆固醇，CHO]
-# dish_name, res_x = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [50, 50], 4, [20, 10, 0, 100])
-# print(dish_name)
-# print(res_x)
+dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 4, [20, 10, 0, 100])
+print(dish_name)
+print(res_x)
