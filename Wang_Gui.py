@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import*
 from PyQt5.QtCore import*
 from PyQt5.QtGui import QIcon, QTextCharFormat, QTextCursor, QTextDocument,QPixmap,QFont
 import sys
+import ChiShenMeCai
 
 class GUI_MainWindow(QtWidgets.QMainWindow):
     def __init__(self,arg=None):
@@ -198,13 +199,15 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print(self.goal)
         return self.goal
 
-
+    def getSupper(self):
+        pass
 
     def fun(self):
         print('successful test!')
 
     def fun1(self,i):
         print(i)
+
 
     def calcuateBMI(self):
         height = int(self.textEditHeight.toPlainText())
@@ -214,17 +217,16 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print('returned bmi ',bmi)
         return float(bmi)
 
+
     def defaultGoal(self):
-        bmi = int(self.textEditBMI.toPlainText())
+        bmi = float(self.textEditBMI.toPlainText())
         age = int(self.textEditAge.toPlainText())
 
-
-   
-
         print("returned age ",age)
-        return age
+        return age,bmi
 
     def getLunch(self):
+        age,bmi= self.defaultGoal()
         print(self.textEditLunch1.toPlainText())
         s = self.textEditLunch1.toPlainText()
         li = s.split()
@@ -238,7 +240,20 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print(li)
         print(cai_name_li)
         print(cai_weight_li)
-        return cai_name_li, cai_weight_li
+
+
+        csm = ChiShenMeCai.ChiShenMe(age, bmi, cai_name_li, cai_weight_li)
+        li1,li2 =  csm.getChiShenMe(3, [12, 8, 0.1, 100])
+        dinner = str('')
+        for i in range(len(li1)):
+            dinner += str(li1[i])
+            dinner += ' '
+            dinner += str(li2[i])
+            dinner += '\n'
+        self.textEditSupper.setText(dinner)
+        
+
+        #return cai_name_li, cai_weight_li
 
     
         
