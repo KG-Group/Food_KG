@@ -28,7 +28,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         ###label###
         self.labelTitle = QtWidgets.QLabel(self.centralWidget)
         self.labelTitle.setGeometry(QtCore.QRect(0,5,480,35))#水平位置,垂直位置,长,高
-        self.labelTitle.setText("<font color=%s>%s</font>" %('#FFFFFF',"我是标题🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎🐎: "))
+        self.labelTitle.setText("<font color=%s>%s</font>" %('#FFFFFF',"**************************基于知识图谱的膳食推荐**************************"))
         self.labelTitle.setMidLineWidth(1)
         self.labelTitle.setStyleSheet('background-color: rgb(49, 140, 155)')
 
@@ -59,22 +59,22 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
         self.labelBreakfast1 = QtWidgets.QLabel(self.centralWidget)
         self.labelBreakfast1.setGeometry(QtCore.QRect(20,275,250,15))#水平位置,垂直位置,长,高
-        self.labelBreakfast1.setText("<font color=%s>%s</font>" %('#000000',"您的早饭吃了些什么呢🥛:"))
+        self.labelBreakfast1.setText("<font color=%s>%s</font>" %('#000000',"您的早饭吃了些什么呢🥛(g):"))
         self.labelBreakfast1.setMidLineWidth(1)
 
         self.labelBreakfast2 = QtWidgets.QLabel(self.centralWidget)
         self.labelBreakfast2.setGeometry(QtCore.QRect(240,275,250,15))#水平位置,垂直位置,长,高
-        self.labelBreakfast2.setText("<font color=%s>%s</font>" %('#000000',"您的早饭获取的营养是:"))
+        self.labelBreakfast2.setText("<font color=%s>%s</font>" %('#000000',"您的早饭获取的营养是(g):"))
         self.labelBreakfast2.setMidLineWidth(1)
 
         self.labelLunch = QtWidgets.QLabel(self.centralWidget)
         self.labelLunch.setGeometry(QtCore.QRect(20,420,250,15))#水平位置,垂直位置,长,高
-        self.labelLunch.setText("<font color=%s>%s</font>" %('#000000',"您的午饭吃了些什么呢🍔:"))
+        self.labelLunch.setText("<font color=%s>%s</font>" %('#000000',"您的午饭吃了些什么呢(g)🍔:"))
         self.labelLunch.setMidLineWidth(1)
 
         self.labelSupper = QtWidgets.QLabel(self.centralWidget)
         self.labelSupper.setGeometry(QtCore.QRect(20,560,250,15))#水平位置,垂直位置,长,高
-        self.labelSupper.setText("<font color=%s>%s</font>" %('#000000',"晚饭的建议是🥣:"))
+        self.labelSupper.setText("<font color=%s>%s</font>" %('#000000',"晚饭的建议是(g)🥣:"))
         self.labelSupper.setMidLineWidth(1)
 
 
@@ -197,13 +197,19 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         goal['health'] = health"""
         self.goal['age'] = age
         print(self.goal)
+        age,bmi = self.defaultGoal()
+        csm = ChiShenMeCai.ChiShenMe(age, bmi)
+        d = csm.getNu_YingChi()
+        ought_nutrition = "热量: "+str(d[0])[:4]+"千卡\n蛋白质: "+str(d[1])[:4]+"\n脂肪: "+str(d[2])[:4]+"\n胆固醇: "+str(d[3])[:4]+"\n碳水化合物: "+str(d[4])[:4]
+        self.textEditOught.setText(str(ought_nutrition))
+
         return self.goal
 
     def getSupper(self):
         pass
 
     def fun(self):
-        breakfast_nutrition = "蛋白质: "+str(20)+"\n脂肪: "+str(10)+"\n胆固醇: "+str(0.02)+"\n碳水化合物: "+str(100)
+        breakfast_nutrition = "蛋白质: "+str(20.2)+"\n脂肪: "+str(10.5)+"\n胆固醇: "+str(0.02)+"\n碳水化合物: "+str(85.3)
         self.textEditBreakfast2.setText(breakfast_nutrition)
 
     def fun1(self,i):
@@ -237,14 +243,14 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
             if i % 2 == 0:
                 cai_name_li.append(li[i])
             else:
-                cai_weight_li.append(int(li[i]))
+                cai_weight_li.append(int(li[i][:4]))
         print(li)
         print(cai_name_li)
         print(cai_weight_li)
 
 
-        csm = ChiShenMeCai.ChiShenMe(age, bmi, cai_name_li, cai_weight_li)
-        li1,li2,li3=  csm.getChiShenMe(4, [20, 10, 0, 100])
+        csm = ChiShenMeCai.ChiShenMe(age, bmi)
+        li1,li2,li3,d=  csm.getChiShenMe(cai_name_li, cai_weight_li,10, [20, 10, 0, 50])
         
         supper = str('')
         lunch_nutrition = str('您摄入的营养是')
@@ -252,7 +258,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         for i in range(len(li1)):
             supper += str(li1[i])
             supper += ' '
-            supper += str(li2[i])
+            supper += str(li2[i])[:3]
             supper += '\n'
         self.textEditSupper.setText(supper)
 
