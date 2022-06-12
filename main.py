@@ -2,6 +2,7 @@ import xlrd
 from opencc import OpenCC
 from py2neo import Graph,Node,Relationship,NodeMatcher
 from Disease2Goal import readDataJKMB2YYCF
+from eva_algorithm import get_food
 colNum = 109
 rowNum = 2122
 
@@ -33,7 +34,7 @@ Goals = []
 GoalTitle = {}
 GoalTend = {}
 DiseasesGoal = {}
-print(len(diseases))
+#print(len(diseases))
 for i in range(0,7):
     DGoals = []
     for key in diseases[i].keys():
@@ -61,34 +62,43 @@ for i in range(0,7):
     DiseasesGoal[Diseases[i]] = DGoals
 Goals = dict.fromkeys(Goals)
 Goals = list(Goals.keys())
-print(DiseasesGoal)
 
 
 
 
 graph = Graph('bolt://nas.boeing773er.site:7687')
-for goal in Goals:
-    if(goal.startswith('高')):
-        GNode = Node('HigherGoal',name = goal)
-        graph.create(GNode)
-        graph.push(GNode)
-    else:
-        GNode = Node('LowerGoal',name = goal)
-        graph.create(GNode)
-        graph.push(GNode)
-for key in DiseasesGoal.keys():
-    DNode = Node('Disease',name = key)
-    graph.create(DNode)
-    graph.push(DNode)
-    for goal in DiseasesGoal[key]:
-        matcher = NodeMatcher(graph)
-        HGNode = matcher.match("HigherGoal",name = goal).first()
-        LGNode = matcher.match("LowerGoal",name = goal).first()
-        GNode
-        if(HGNode):
-            GNode = HGNode
-        elif(LGNode):
-            GNode = LGNode
-        Edge = Relationship(DNode,"应食用",GNode)
+#for goal in Goals:
+#    if(goal.startswith('高')):
+#        GNode = Node('HigherGoal',name = goal)
+#        graph.create(GNode)
+#        graph.push(GNode)
+#    else:
+#        GNode = Node('LowerGoal',name = goal)
+#        graph.create(GNode)
+#        graph.push(GNode)
+#for key in DiseasesGoal.keys():
+#    DNode = Node('Disease',name = key)
+#    graph.create(DNode)
+#    graph.push(DNode)
+#    for goal in DiseasesGoal[key]:
+#        matcher = NodeMatcher(graph)
+#        HGNode = matcher.match("HigherGoal",name = goal).first()
+#        LGNode = matcher.match("LowerGoal",name = goal).first()
+#        GNode
+#        if(HGNode):
+#            GNode = HGNode
+#        elif(LGNode):
+#            GNode = LGNode
+#        Edge = Relationship(DNode,"应食用",GNode)
+#        graph.create(Edge)
+#        graph.push(Edge)
+DiseaseFood = get_food()
+#print(DiseaseFood)
+matcher = NodeMatcher(graph)
+for Disease in DiseaseFood.keys():
+    for category in DiseaseFood[Disease].keys():
+        DNode = matcher.match("Disease",name = Disease).first()
+        FNode = matcher.match(category,name = DiseaseFood[Disease][category]).first()
+        Edge = Relationship(DNode,"应选择",FNode)
         graph.create(Edge)
         graph.push(Edge)

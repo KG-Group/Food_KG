@@ -8,11 +8,11 @@ from yaml import ValueToken
 graph = Graph('bolt://nas.boeing773er.site:7687')
 
 
-data = pd.read_excel("STaiwan.xlsx")
+data = pd.read_excel("document/STaiwan.xlsx")
 data.fillna(value=0.0,inplace=True)
 
 def insert(index):
-    foodNode = Node('Food',name=data.iloc[index][2])
+    foodNode = Node(str(data.iloc[index][1]),name=data.iloc[index][2])
     for i in range(len(data.columns)):
         if isinstance (data.iloc[index][i],str):
             foodNode[str(data.columns[i])] = data.iloc[index][i]
