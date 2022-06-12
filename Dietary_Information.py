@@ -1,4 +1,4 @@
-from py2neo import Graph, Node, NodeMatcher, Relationship
+from py2neo import Graph, Node, NodeMatcher, Relationship, RelationshipMatcher
 import xlrd
 
 graph = Graph('bolt://nas.boeing773er.site:7687')
@@ -69,7 +69,7 @@ if upload_age_bmi_edge:
         graph.create(Edge)
         graph.push(Edge)
 
-upload_age_kcal_edge = True
+upload_age_kcal_edge = False
 if upload_age_kcal_edge:
     matcher = NodeMatcher(graph)
     age_list = matcher.match("age").where("_.name<11")
@@ -123,3 +123,33 @@ if upload_age_kcal_edge:
         graph.create(Edge)
         graph.push(Edge)
 
+
+upload = False
+if upload:
+    bmi_min_list = [14.0, 14.1, 14.2, 14.5, 15.0, 15.5, 16.0, 16.5, 17.0, 17.4, 17.8]
+    bmi_max_list = [17.3, 18.0, 18.8, 19.5, 20.2, 20.9, 21.8, 22.5, 23.0, 23.4, 23.7]
+    matcher = NodeMatcher(graph)
+    for i in range(len(bmi_max_list)):
+        age_node = matcher.match("age").where(name=i+7).first()
+        GNode = Node('bmi', name=bmi_min_list[i])
+        graph.create(GNode)
+        graph.push(GNode)
+        Edge = Relationship(age_node, "normal_min_bmi", GNode)
+        # Edge.
+        graph.create(Edge)
+        graph.push(Edge)
+        GNode = Node('bmi', name=bmi_max_list[i])
+        graph.create(GNode)
+        graph.push(GNode)
+        Edge = Relationship(age_node, "normal_max_bmi", GNode)
+        graph.create(Edge)
+        graph.push(Edge)
+
+node_matcher = NodeMatcher(graph)
+node1 = node_matcher.match("age").where(name=18).first()
+print(node1)
+matcher = RelationshipMatcher(graph)
+result = matcher.match([node1], r_type=None)
+for temp in result:
+    print(temp)
+    print(temp.labels())
