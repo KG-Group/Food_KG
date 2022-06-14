@@ -144,7 +144,7 @@ class ChiShenMe:
         i = 0
         for cai in cai_li:
             if cai in dish_name:
-                nu_YiChi = nu_YiChi + nu_cai[:, dish_name.index(cai)] * cai_weight[i] / 200.00
+                nu_YiChi = nu_YiChi + nu_cai[:, dish_name.index(cai)] * cai_weight[i] / 300.00      # 200
             i += 1
         return nu_YiChi
 
@@ -273,7 +273,7 @@ class ChiShenMe:
 
         res_x = []
         for i in res.x:
-            res_x.append(i * 200.00)       # 化为 300g
+            res_x.append(i * 300.00)       # 化为 300g  # 200
         
         
         low_li = []
