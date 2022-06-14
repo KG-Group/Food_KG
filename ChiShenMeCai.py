@@ -151,6 +151,12 @@ class ChiShenMe:
     #def getNu_YouChiLe(self, dish_name, cai_weight):
 
     # def getNu_YingChi()
+    def getNuFromCai(self, nu_cai, cai_weight_li):
+        cai_weight_li = np.array(cai_weight_li)
+        cai_weight_li = cai_weight_li / 300.0
+        nu = nu_cai * cai_weight_li.reshape((1, cai_weight_li.shape[0]))
+        nu = np.dot(nu, np.ones((nu.shape[1], 1)))
+        return nu
     
     # 外部调用的函数
     def getChiShenMe(self, cai_name_li, cai_weight_li, cai_num, else_nu_Yichi):
@@ -279,11 +285,17 @@ class ChiShenMe:
         low_li = []
         new_res_x = []
         new_dish_name = []
+        new_nu_cai = np.array([])
+        new_nu_cai = new_nu_cai.reshape((4, 0))
         i = 0
+        j = 0
         for chi in res_x:
             if chi >= 50:
+                j += 1
                 new_dish_name.append(dish_name[i])
                 new_res_x.append(chi)
+                print(new_nu_cai.shape)
+                new_nu_cai = np.append(new_nu_cai, (nu_cai[:,i]).reshape((4, 1)), axis = 1)
             i += 1
         
         for i in range(cai_num):
@@ -297,6 +309,11 @@ class ChiShenMe:
         print(nu_Sheng)
         print("又吃了")
 
+        print(new_nu_cai.shape)
+        # print(nu_cai.shape)
+        print(len(new_res_x))
+        nu_YouChi = self.getNuFromCai(new_nu_cai, new_res_x)
+        print(nu_YouChi)
         
         return new_dish_name, new_res_x, nu_WuFan, nu_YingChi
         
@@ -406,6 +423,8 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 # [蛋白质，脂肪，胆固醇，CHO]
 #csm = ChiShenMe(22, 25)
 # print(csm.getNu_YingChi()) # 打印营养目标
-dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 10, [20, 10, 0, 100])
-print(dish_name)
-print(res_x)
+
+# 运行用例
+# dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 10, [20, 10, 0, 100])
+# print(dish_name)
+# print(res_x)
