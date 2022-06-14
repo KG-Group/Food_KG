@@ -309,11 +309,13 @@ class ChiShenMe:
         print(nu_Sheng)
         print("又吃了")
 
-        print(new_nu_cai.shape)
+        # print(new_nu_cai.shape)
         # print(nu_cai.shape)
-        print(len(new_res_x))
+        # print(len(new_res_x))
         nu_YouChi = self.getNuFromCai(new_nu_cai, new_res_x)
         print(nu_YouChi)
+        print(new_nu_cai)
+        print(new_res_x)
         
         return new_dish_name, new_res_x, nu_WuFan, nu_YingChi
         
