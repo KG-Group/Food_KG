@@ -7,12 +7,31 @@ from py2neo import Node, Relationship, Graph, NodeMatcher, RelationshipMatcher
 
 class ChiShenMe:
     # cai_weight_li 中单位为 克
-    def __init__(self, age, bmi):
+    def __init__(self, age=20, bmi=20, JianKangMuBiao="", JiBing=""):
         self.age = age
         self.bmi = bmi
+        self.JianKangMuBiao = JianKangMuBiao
+        self.JiBing = JiBing
         '''self.cai_name_li = cai_name_li
         self.cai_weight_li = cai_weight_li'''
         self.graph = Graph('bolt://nas.boeing773er.site:7687')
+        self.dish_name, self.nu_cai = self.getCai()
+        self.Nu_YiChi = np.array([0, 0, 0, 0])
+
+    def setAge(self, age):
+        self.age = age
+
+    def setBMI(self, bmi):
+        self.bmi = bmi
+    
+    def setJianKangMuBiao(self, JianKangMuBiao):
+        self.JianKangMuBiao = JianKangMuBiao
+    
+    def setJiBing(self, JiBing):
+        self.JiBing = JiBing
+    
+    def clearNu_YiChi(self):
+        self.Nu_YiChi = np.array([0, 0, 0, 0])
 
     # 已经吃了什么菜
     # -> 每种营养成分已经吃了多少
@@ -24,6 +43,43 @@ class ChiShenMe:
     w = 70
     bmi = 20'''
 
+    # 通过健康目标与疾病，修改应吃营养成分量
+    def changeYingChi_by_JKMBandJB(self, nl, dbz, zf, dgc, cho):
+        JKMB_li = ["增重（全）", "增重（肌）", "减重"]
+        JB_li = ["高血压", "高血脂", "高血糖"]
+        rate = 0.85
+        if self.JiBing in JB_li:
+            if self.JiBing == JB_li[0]:
+                zf *= rate
+                cho *= rate
+            elif self.JiBing == JB_li[1]:
+                dbz /= rate
+                zf *= rate
+                dgc *= rate
+            elif self.JiBing == JB_li[2]:
+                zf *= rate
+                cho *= rate
+                dgc *= rate
+        else:
+            if self.JianKangMuBiao == JKMB_li[0]:
+                nl /= rate
+                dbz /= rate
+                zf /= rate
+                dgc /= rate
+                cho /= rate
+            elif self.JianKangMuBiao == JKMB_li[1]:
+                nl /= (1-(1-rate)/2)
+                dbz /= rate
+            elif self.JianKangMuBiao == JKMB_li[2]:
+                nl *= rate
+                dbz *= rate
+                zf *= rate
+                dgc *= rate
+                cho *= rate
+        
+        return nl, dbz, zf, dgc, cho
+    
+    # 获取应吃营养成分
     # [能量，蛋白质，脂肪，胆固醇，CHO]
     def getNu_YingChi(self):
         age, bmi = self.age, self.bmi
@@ -95,6 +151,8 @@ class ChiShenMe:
             elif  i.end_node['name'] == '蛋白质（g）':
                 dbz = float(type(i).__name__)
         
+        nl, dbz, zf, dgc, cho = self.changeYingChi_by_JKMBandJB(nl, dbz, zf, dgc, cho)
+
         print('cho ' + str(cho))
         print('dgc ' + str(dgc))
         print('zf  ' + str(zf))
@@ -104,7 +162,7 @@ class ChiShenMe:
         # [能量，蛋白质，脂肪，胆固醇，CHO]
         return [nl, dbz, zf, dgc, cho]
 
-# [蛋白质，脂肪，胆固醇，CHO]
+    # [蛋白质，脂肪，胆固醇，CHO]
     def getCai(self):
         node_matcher = NodeMatcher(self.graph)
         relation_matcher = RelationshipMatcher(self.graph)
@@ -139,7 +197,7 @@ class ChiShenMe:
 
         return dish_name, nu_cai
 
-    def getNu_YiChi(self, cai_li, nu_cai, dish_name, cai_weight):
+    def getNu_YiChi(self, cai_li, cai_weight, nu_cai, dish_name):
         nu_YiChi = np.array([0, 0, 0, 0])
         i = 0
         for cai in cai_li:
@@ -150,7 +208,7 @@ class ChiShenMe:
 
     #def getNu_YouChiLe(self, dish_name, cai_weight):
 
-    # def getNu_YingChi()
+    
     def getNuFromCai(self, nu_cai, cai_weight_li):
         cai_weight_li = np.array(cai_weight_li)
         cai_weight_li = cai_weight_li / 300.0
@@ -158,16 +216,26 @@ class ChiShenMe:
         nu = np.dot(nu, np.ones((nu.shape[1], 1)))
         return nu
     
-    # 外部调用的函数
-    def getChiShenMe(self, cai_name_li, cai_weight_li, cai_num, else_nu_Yichi):
-        self.cai_name_li = cai_name_li
-        self.cai_weight_li = cai_weight_li
 
-        dish_name, nu_cai = self.getCai()
+    # 添加一顿饭，返回这顿饭营养成分
+    def addYiChigetNu(self, cai_name_li, cai_weight_li):
+        thistime_nu_YiChi = self.getNu_YiChi(cai_name_li, cai_weight_li, self.nu_cai, self.dish_name)
+        self.Nu_YiChi = self.Nu_YiChi + thistime_nu_YiChi
+        return thistime_nu_YiChi
+
+
+    # 获取晚饭吃什么，外部调用的函数
+    def getChiShenMe(self, cai_num, else_nu_Yichi = [0,0,0,0]):
+        # self.cai_name_li = cai_name_li
+        # self.cai_weight_li = cai_weight_li
+
+        self.dish_name, self.nu_cai = self.getCai()
+        
 
         # 已吃-营养成分向量（4）
-        nu_YiChi = self.getNu_YiChi(self.cai_name_li, nu_cai, dish_name, self.cai_weight_li)   # 已经吃了的营养成分量 (能量)[蛋白质，脂肪，胆固醇，CHO]
-        nu_WuFan = nu_YiChi
+        nu_YiChi = self.Nu_YiChi
+        '''nu_YiChi = self.getNu_YiChi(self.cai_name_li, self.nu_cai, self.dish_name, self.cai_weight_li)   # 已经吃了的营养成分量 (能量)[蛋白质，脂肪，胆固醇，CHO]
+        nu_WuFan = nu_YiChi'''
         nu_YiChi = nu_YiChi + np.array(else_nu_Yichi)
         # 应吃-营养成分向量（5）
         nu_YingChi = self.getNu_YingChi()  # age, bmi
@@ -183,10 +251,10 @@ class ChiShenMe:
 
 
         # 最大值的函数的系数数组
-        c = nu_cai / nu_Sheng
+        c = self.nu_cai / nu_Sheng
         c = np.dot(np.ones((1, 4)), c)      # 将每列加和在一起
         # 不等式未知量的系数矩阵
-        A_ub = nu_cai * -1
+        A_ub = self.nu_cai * -1
         # 不等式的右边
         B_ub = nu_Sheng * -1
         '''print("c")
@@ -222,15 +290,15 @@ class ChiShenMe:
 
         # 更新 nu_cai 矩阵，仅使用三个菜进行计算
         # nu_cai_new = []
-        nu_cai_shape_y = nu_cai.shape[1]
+        nu_cai_shape_y = self.nu_cai.shape[1]
         for i in range(cai_num):
-            nu_cai = np.append(nu_cai, nu_cai[:, max_no_li[i]].reshape((4,1)), axis = 1)
+            self.nu_cai = np.append(self.nu_cai, self.nu_cai[:, max_no_li[i]].reshape((4,1)), axis = 1)
             # nu_cai_new.append(nu_cai[:, max_no_li[i]])
         '''nu_cai0 = nu_cai[:, max_no_li[0]]
         nu_cai1 = nu_cai[:, max_no_li[1]]
         nu_cai2 = nu_cai[:, max_no_li[2]]'''
         # print(nu_cai.shape)
-        nu_cai = nu_cai[:, nu_cai_shape_y:]
+        self.nu_cai = self.nu_cai[:, nu_cai_shape_y:]
         # print(nu_cai.shape)
         
 
@@ -246,14 +314,14 @@ class ChiShenMe:
         # print(nu_cai)
 
         # 更新 dish_name 矩阵
-        dish_name_len = len(dish_name)
+        dish_name_len = len(self.dish_name)
         for i in range(cai_num):
-            dish_name.append(dish_name[max_no_li[i]])
+            self.dish_name.append(self.dish_name[max_no_li[i]])
             # nu_cai_new.append(nu_cai[:, max_no_li[i]])
         
         # print("dish_name:")
         # print(len(dish_name))
-        dish_name = dish_name[dish_name_len:]
+        self.dish_name = self.dish_name[self.dish_name_len:]
         # print(len(dish_name))
 
 
@@ -262,10 +330,10 @@ class ChiShenMe:
 
         # 重新计算 三个菜分别吃多少
         # 最大值的函数的系数数组
-        c = nu_cai / nu_Sheng
+        c = self.nu_cai / nu_Sheng
         c = np.dot(np.ones((1, 4)), c)      # 将每列加和在一起
         # 不等式未知量的系数矩阵
-        A_ub = nu_cai * -1
+        A_ub = self.nu_cai * -1
         # 不等式的右边
         B_ub = nu_Sheng * -1
         '''print("c")
@@ -292,14 +360,14 @@ class ChiShenMe:
         for chi in res_x:
             if chi >= 50:
                 j += 1
-                new_dish_name.append(dish_name[i])
+                new_dish_name.append(self.dish_name[i])
                 new_res_x.append(chi)
                 print(new_nu_cai.shape)
-                new_nu_cai = np.append(new_nu_cai, (nu_cai[:,i]).reshape((4, 1)), axis = 1)
+                new_nu_cai = np.append(new_nu_cai, (self.nu_cai[:,i]).reshape((4, 1)), axis = 1)
             i += 1
         
         for i in range(cai_num):
-            print(dish_name[i] + '\t' + str(res_x[i]) + '\tg')
+            print(self.dish_name[i] + '\t' + str(res_x[i]) + '\tg')
         
         print("已吃")
         print(nu_YiChi)
