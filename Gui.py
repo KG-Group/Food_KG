@@ -328,7 +328,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
 
     def getSupper(self):
-        li1, li2, li4, li5= self.csm.getChiShenMe(7,[0,0,0,0])#li5 is for total delta
+        li1, li2, li4, li5= self.csm.getChiShenMe(10,[0,0,0,0])#li5 is for total delta
 
         supper = str('')
         for i in range(len(li1)):
@@ -341,7 +341,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         supper_nutrition = "蛋白质: "+str(li4[0])[1:5]+"\n脂肪: "+str(li4[1])[1:5]+"\n胆固醇: "+str(li4[2])[1:5]+"\n碳水化合物: "+str(li4[3])[1:5]
         self.textEditSupper2.setText(supper_nutrition)
         
-
+        print("delta:",li5)
         
 
     def get_bmi_range(self):
