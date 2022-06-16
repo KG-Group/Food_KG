@@ -19,7 +19,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
     def setUp(self, MainWindow):
         MainWindow.setObjectName("Main Window")
         MainWindow.resize(480, 840)
-        MainWindow.setFixedSize(480, 900) #本行为禁止窗口拉伸
+        MainWindow.setFixedSize(480, 960) #本行为禁止窗口拉伸
         self.centralWidget = QtWidgets.QTabWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.retranslate(MainWindow)
@@ -93,8 +93,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.labelSupper.setMidLineWidth(1)
 
         self.label_sum = QtWidgets.QLabel(self.centralWidget)
-        self.label_sum.setGeometry(QtCore.QRect(20, 780, 250, 15))  # 水平位置,垂直位置,长,高
-        self.label_sum.setText("<font color=%s>%s</font>" % ('#000000', "今日营养目标达成情况:"))
+        self.label_sum.setGeometry(QtCore.QRect(20, 780, 320, 15))  # 水平位置,垂直位置,长,高
+        self.label_sum.setText("<font color=%s>%s</font>" % ('#000000', "今日营养目标达成情况:(实际吃了多少，差多少)"))
         self.label_sum.setMidLineWidth(1)
 
         # ##textEdit###
@@ -135,7 +135,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.nutri_table.setHorizontalHeaderLabels(["热量", "蛋白质", "脂肪", "胆固醇", "碳水化合物"])
         self.nutri_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.nutri_table.verticalHeader().setHidden(True)
-        self.nutri_table.setGeometry(QtCore.QRect(20, 190, 440, 70))
+        self.nutri_table.setGeometry(QtCore.QRect(20, 190, 440, 65))
 
         self.textEditBreakfast1 = QtWidgets.QTextEdit(self.centralWidget)
         self.textEditBreakfast1.setGeometry(QtCore.QRect(20, 295, 220, 100))
@@ -163,8 +163,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.textEditSupper2.setGeometry(QtCore.QRect(240, 635, 220, 110))
         self.textEditSupper2.setObjectName("textEdit")
 
-        self.nutri_result_table =  QtWidgets.QTableWidget(1, 5, parent=self.centralWidget)
-        self.nutri_result_table.setGeometry(QtCore.QRect(20, 800, 440, 70))
+        self.nutri_result_table =  QtWidgets.QTableWidget(2, 5, parent=self.centralWidget)
+        self.nutri_result_table.setGeometry(QtCore.QRect(20, 800, 440, 105))
         self.nutri_result_table.setHorizontalHeaderLabels(["热量", "蛋白质", "脂肪", "胆固醇", "碳水化合物"])
         self.nutri_result_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.nutri_result_table.verticalHeader().setHidden(True)
@@ -249,7 +249,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         for i in range(1, 5):
             temp_item = QtWidgets.QTableWidgetItem()
-            temp_item.setText(_translate("widget", str(d[i]) + "g"))
+            # temp_item.setText(_translate("widget", str(d[i]) + "g"))
+            temp_item.setText(_translate("widget", str(round(d[i], 2)) + "g"))
             self.nutri_table.setItem(0, i, temp_item)
         self.target_kcal = int(d[1]*4.12 + d[2]*9.05 + d[4]*3.98)
         temp_item = QtWidgets.QTableWidgetItem()
@@ -323,7 +324,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.textEditLunch2.setText(lunch_nutrition)
 
     def getSupper(self):
-        li1, li2, li4, li5 = self.csm.getChiShenMe(10, [0, 0, 0, 0])  # li5 is for total delta
+        li1, li2, li4, li5, li6 = self.csm.getChiShenMe(10, [0, 0, 0, 0])  # li5 is for total delta
 
         supper = str('')
         for i in range(len(li1)):
@@ -340,14 +341,22 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         for i in range(4):
             temp_item = QtWidgets.QTableWidgetItem()
-            temp_item.setText(_translate("widget", str(round(li5[i][0], 2) * -1) + "g"))
+            temp_item.setText(_translate("widget", str(round(li6[i][0], 2)) + "g"))
             self.nutri_result_table.setItem(0, i+1, temp_item)
-        delta_kcal = int(li5[0] * 4.12 + li5[1] * 9.05 + li5[3] * 3.98)
-
-        actual_kcal = self.target_kcal - delta_kcal
+        for i in range(4):
+            temp_item = QtWidgets.QTableWidgetItem()
+            temp_item.setText(_translate("widget", str(round(li5[i][0], 2)) + "g"))
+            self.nutri_result_table.setItem(1, i+1, temp_item)
+        print(li6)
+        actual_kcal = int(li6[0] * 4.12 + li6[1] * 9.05 + li6[3] * 3.98)
+        temp_item = QtWidgets.QTableWidgetItem()
+        temp_item.setText(_translate("widget", str(actual_kcal) + "kcal"))
+        self.nutri_result_table.setItem(0, 0, temp_item)
+        delta_kcal = actual_kcal - self.target_kcal
         temp_item = QtWidgets.QTableWidgetItem()
         temp_item.setText(_translate("widget", str(delta_kcal) + "kcal"))
-        self.nutri_result_table.setItem(0, 0, temp_item)
+        self.nutri_result_table.setItem(1, 0, temp_item)
+
 
     def get_bmi_range(self):
         age = int(self.textEditAge.text())
