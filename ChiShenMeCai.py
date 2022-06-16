@@ -192,13 +192,17 @@ class ChiShenMe:
             this_cai = np.array([[dbz], [zf], [dgc], [cho]])
             nu_cai = np.append(nu_cai, this_cai, axis = 1)
         
-        nu_cai = nu_cai[:, 1:]      #  去除第一列0值
+        # nu_cai = nu_cai[:, 1:]      #  去除第一列0值
         # print(nu_cai.shape)
 
         return dish_name, nu_cai
 
     def getNu_YiChi(self, cai_li, cai_weight, nu_cai, dish_name):
         nu_YiChi = np.array([0, 0, 0, 0])
+        # nu_YiChi = nu_YiChi.reshape((0, 4))
+        print("------------------------------------------------------")
+        print(nu_cai.shape)
+        print(len(dish_name))
         i = 0
         for cai in cai_li:
             if cai in dish_name:
@@ -246,6 +250,7 @@ class ChiShenMe:
 
         # 求 剩余-营养成分向量（4）
         nu_Sheng = nu_YingChi - nu_YiChi    # 剩余 应该吃的营养成分量 [能量，蛋白质，脂肪，胆固醇，CHO]
+        print(nu_Sheng.shape)
         nu_Sheng = nu_Sheng.reshape((4, 1))
 
 
@@ -392,17 +397,20 @@ class ChiShenMe:
 
 
 if __name__ == "__main__":
-    csm = ChiShenMe(22, 25)     # 参数1：年龄
+    #csm = ChiShenMe(22, 25)     # 参数1：年龄
                                 # 参数2：bmi
                                                             
     
-    dish_name, res_x, nu_WuFan, nu_YingChi = csm.getChiShenMe(['红烧排骨米线'], [300], 4, [0, 0, 0, 0])    
+    #dish_name, res_x, nu_WuFan, nu_YingChi = csm.getChiShenMe(['红烧排骨米线'], [300], 4, [0, 0, 0, 0])    
                                                             # 参数1：已吃菜的list
                                                             # 参数2：已吃菜对应重量的list（克）
                                                             # 参数3：推荐的菜数
                                                             # 参数4：已吃营养成分 [蛋白质，脂肪，胆固醇，CHO]
     # print(dish_name)
     # print(res_x)
+    csm = ChiShenMe()
+    csm.addYiChigetNu(['红烧排骨米线'], [100])
+    csm.getChiShenMe(10)
 
 
 
@@ -500,3 +508,4 @@ print(nu_YiChi)     # [蛋白质，脂肪，胆固醇，CHO]
 # dish_name, res_x, nu_WuFan, nu_YingChi = getChiShenMeCai_all(29, 20.9, ['香菇菜心', '酸菜鱼'], [100, 100], 10, [20, 10, 0, 100])
 # print(dish_name)
 # print(res_x)
+
