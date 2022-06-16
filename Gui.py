@@ -72,14 +72,24 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.labelBreakfast2.setText("<font color=%s>%s</font>" % ('#000000', "您的早饭获取的营养是(g):"))
         self.labelBreakfast2.setMidLineWidth(1)
 
-        self.labelLunch = QtWidgets.QLabel(self.centralWidget)
-        self.labelLunch.setGeometry(QtCore.QRect(20, 420, 250, 15))  # 水平位置,垂直位置,长,高
-        self.labelLunch.setText("<font color=%s>%s</font>" % ('#000000', "您的午饭吃了些什么呢(g)🍔:"))
-        self.labelLunch.setMidLineWidth(1)
+        self.labelLunch1 = QtWidgets.QLabel(self.centralWidget)
+        self.labelLunch1.setGeometry(QtCore.QRect(20, 420, 250, 15))  # 水平位置,垂直位置,长,高
+        self.labelLunch1.setText("<font color=%s>%s</font>" % ('#000000', "您的午饭吃了些什么呢(g)🍔:"))
+        self.labelLunch1.setMidLineWidth(1)
+
+        self.labelLunch2 = QtWidgets.QLabel(self.centralWidget)
+        self.labelLunch2.setGeometry(QtCore.QRect(240, 420, 250, 15))  # 水平位置,垂直位置,长,高
+        self.labelLunch2.setText("<font color=%s>%s</font>" % ('#000000', "您的早饭获取的营养是(g):"))
+        self.labelLunch2.setMidLineWidth(1)
 
         self.labelSupper = QtWidgets.QLabel(self.centralWidget)
-        self.labelSupper.setGeometry(QtCore.QRect(20, 560, 250, 15))    # 水平位置,垂直位置,长,高
+        self.labelSupper.setGeometry(QtCore.QRect(20, 568, 250, 15))    # 水平位置,垂直位置,长,高
         self.labelSupper.setText("<font color=%s>%s</font>" % ('#000000', "晚饭的建议是(g)🥣:"))
+        self.labelSupper.setMidLineWidth(1)
+
+        self.labelSupper = QtWidgets.QLabel(self.centralWidget)
+        self.labelSupper.setGeometry(QtCore.QRect(240, 568, 250, 15))    # 水平位置,垂直位置,长,高
+        self.labelSupper.setText("<font color=%s>%s</font>" % ('#000000', "预计晚饭获取的营养是(g):"))
         self.labelSupper.setMidLineWidth(1)
 
 
@@ -144,10 +154,13 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.textEditLunch2.setFocusPolicy(QtCore.Qt.NoFocus)
         self.textEditLunch2.setObjectName("textEdit")
 
-        self.textEditSupper = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditSupper.setGeometry(QtCore.QRect(20,580,440,130))
-        self.textEditSupper.setObjectName("textEdit")
+        self.textEditSupper1 = QtWidgets.QTextEdit(self.centralWidget)
+        self.textEditSupper1.setGeometry(QtCore.QRect(20,588,220,125))
+        self.textEditSupper1.setObjectName("textEdit")
         
+        self.textEditSupper2 = QtWidgets.QTextEdit(self.centralWidget)
+        self.textEditSupper2.setGeometry(QtCore.QRect(240,588,220,125))
+        self.textEditSupper2.setObjectName("textEdit")
 
         # ##button###
         self.buttonBMI = QtWidgets.QPushButton(self.centralWidget)
