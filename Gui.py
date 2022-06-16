@@ -19,7 +19,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
     def setUp(self, MainWindow):
         MainWindow.setObjectName("Main Window")
         MainWindow.resize(480, 840)
-        MainWindow.setFixedSize(480, 840) #本行为禁止窗口拉伸
+        MainWindow.setFixedSize(480, 900) #本行为禁止窗口拉伸
         self.centralWidget = QtWidgets.QTabWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.retranslate(MainWindow)
@@ -92,6 +92,10 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.labelSupper.setText("<font color=%s>%s</font>" % ('#000000', "预计晚饭获取的营养是(g):"))
         self.labelSupper.setMidLineWidth(1)
 
+        self.label_sum = QtWidgets.QLabel(self.centralWidget)
+        self.label_sum.setGeometry(QtCore.QRect(20, 780, 250, 15))  # 水平位置,垂直位置,长,高
+        self.label_sum.setText("<font color=%s>%s</font>" % ('#000000', "今日营养目标达成情况:"))
+        self.label_sum.setMidLineWidth(1)
 
         # ##textEdit###
         self.textEditHeight = QtWidgets.QLineEdit(self.centralWidget)
@@ -128,13 +132,10 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         # self.textEditOught.setObjectName("textEdit")
 
         self.nutri_table = QtWidgets.QTableWidget(1, 5, parent=self.centralWidget)
-        # self.nutri_table.setColumnCount(5)
-        # self.nutri_table.setRowCount(1)
         self.nutri_table.setHorizontalHeaderLabels(["热量", "蛋白质", "脂肪", "胆固醇", "碳水化合物"])
         self.nutri_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.nutri_table.verticalHeader().setHidden(True)
         self.nutri_table.setGeometry(QtCore.QRect(20, 190, 440, 70))
-        # self.nutri_table.setItem()
 
         self.textEditBreakfast1 = QtWidgets.QTextEdit(self.centralWidget)
         self.textEditBreakfast1.setGeometry(QtCore.QRect(20, 295, 220, 100))
@@ -150,17 +151,24 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.textEditLunch1.setObjectName("textEdit")
 
         self.textEditLunch2 = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditLunch2.setGeometry(QtCore.QRect(240,440,220,100))
+        self.textEditLunch2.setGeometry(QtCore.QRect(240, 440, 220, 100))
         self.textEditLunch2.setFocusPolicy(QtCore.Qt.NoFocus)
         self.textEditLunch2.setObjectName("textEdit")
 
         self.textEditSupper1 = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditSupper1.setGeometry(QtCore.QRect(20,635,220,110))
+        self.textEditSupper1.setGeometry(QtCore.QRect(20, 635, 220, 110))
         self.textEditSupper1.setObjectName("textEdit")
         
         self.textEditSupper2 = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditSupper2.setGeometry(QtCore.QRect(240,635,220,110))
+        self.textEditSupper2.setGeometry(QtCore.QRect(240, 635, 220, 110))
         self.textEditSupper2.setObjectName("textEdit")
+
+        self.nutri_result_table =  QtWidgets.QTableWidget(1, 5, parent=self.centralWidget)
+        self.nutri_result_table.setGeometry(QtCore.QRect(20, 800, 440, 70))
+        self.nutri_result_table.setHorizontalHeaderLabels(["热量", "蛋白质", "脂肪", "胆固醇", "碳水化合物"])
+        self.nutri_result_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.nutri_result_table.verticalHeader().setHidden(True)
+
 
         # ##button###
         self.buttonBMI = QtWidgets.QPushButton(self.centralWidget)
@@ -232,41 +240,29 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.goal['health'] = str(i).strip()
 
     def getAge(self):
-        #goal = {'age':'','gender':'','shape':'','health':''}
-        # age = self.textEditAge.toPlainText()
         age = self.textEditAge.text()
-        """gender = self.fun1(i)
-        shape = self.fun2(i)
-        health = self.fun3(i)
-        goal['age'] = age
-        goal['gender'] = gender
-        goal['shape'] = shape
-        goal['health'] = health"""
         self.goal['age'] = age
         print(self.goal)
         age, bmi = self.defaultGoal()
-        self.csm = ChiShenMeCai.ChiShenMe(age, bmi,self.goal['shape'],self.goal['health'])
+        self.csm = ChiShenMeCai.ChiShenMe(age, bmi, self.goal['shape'], self.goal['health'])
         d = self.csm.getNu_YingChi()
-        # ought_nutrition = "热量: "+str(d[0])[:4]+"kcal\n蛋白质: "+str(d[1])[:4]+"g\n脂肪: "+str(d[2])[:4]+"g\n胆固醇: "\
-        #                   +str(d[3])[:4]+"g\n碳水化合物: "+str(d[4])[:4]+"g"
-        # self.textEditOught.setText(str(ought_nutrition))
         _translate = QtCore.QCoreApplication.translate
-        for i in range(5):
+        for i in range(1, 5):
             temp_item = QtWidgets.QTableWidgetItem()
-            if i == 0:
-                temp_item.setText(_translate("widget", str(d[i]) + "kcal"))
-            else:
-                temp_item.setText(_translate("widget", str(d[i]) + "g"))
+            temp_item.setText(_translate("widget", str(d[i]) + "g"))
             self.nutri_table.setItem(0, i, temp_item)
+        self.target_kcal = int(d[1]*4.12 + d[2]*9.05 + d[4]*3.98)
+        temp_item = QtWidgets.QTableWidgetItem()
+        temp_item.setText(_translate("widget", str(self.target_kcal) + "kcal"))
+        self.nutri_table.setItem(0, 0, temp_item)
 
         return self.goal
-
 
     def fun(self):
         breakfast_nutrition = "蛋白质: "+str(20.2)+"\n脂肪: "+str(10.5)+"\n胆固醇: "+str(0.02)+"\n碳水化合物: "+str(85.3)
         self.textEditBreakfast2.setText(breakfast_nutrition)
 
-    def fun1(self,i):
+    def fun1(self, i):
         print(i)
 
     def calcuateBMI(self):
@@ -320,15 +316,14 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
         nu_Lunch = self.csm.addYiChigetNu(cai_name_li, cai_weight_li)   # get lunch nu
         
-        #li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
+        # li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
         li3 = nu_Lunch
         
         lunch_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
         self.textEditLunch2.setText(lunch_nutrition)
 
-
     def getSupper(self):
-        li1, li2, li4, li5= self.csm.getChiShenMe(10,[0,0,0,0])#li5 is for total delta
+        li1, li2, li4, li5 = self.csm.getChiShenMe(10, [0, 0, 0, 0])  # li5 is for total delta
 
         supper = str('')
         for i in range(len(li1)):
@@ -341,8 +336,18 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         supper_nutrition = "蛋白质: "+str(li4[0])[1:5]+"\n脂肪: "+str(li4[1])[1:5]+"\n胆固醇: "+str(li4[2])[1:5]+"\n碳水化合物: "+str(li4[3])[1:5]
         self.textEditSupper2.setText(supper_nutrition)
         
-        print("delta:",li5)
-        
+        print("delta:", li5)
+        _translate = QtCore.QCoreApplication.translate
+        for i in range(4):
+            temp_item = QtWidgets.QTableWidgetItem()
+            temp_item.setText(_translate("widget", str(round(li5[i][0], 2) * -1) + "g"))
+            self.nutri_result_table.setItem(0, i+1, temp_item)
+        delta_kcal = int(li5[0] * 4.12 + li5[1] * 9.05 + li5[3] * 3.98)
+
+        actual_kcal = self.target_kcal - delta_kcal
+        temp_item = QtWidgets.QTableWidgetItem()
+        temp_item.setText(_translate("widget", str(delta_kcal) + "kcal"))
+        self.nutri_result_table.setItem(0, 0, temp_item)
 
     def get_bmi_range(self):
         age = int(self.textEditAge.text())
