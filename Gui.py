@@ -180,7 +180,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.buttonConfirm2.setGeometry(QtCore.QRect(365, 392, 100, 30))   # 水平位置,垂直位置,长,高
         self.buttonConfirm2.setObjectName("buttonConfirm2")
         self.buttonConfirm2.setText("确定")
-        self.buttonConfirm2.clicked.connect(self.fun)
+        self.buttonConfirm2.clicked.connect(self.getBreakfast)
         
         self.buttonConfirm3 = QtWidgets.QPushButton(self.centralWidget)
         self.buttonConfirm3.setGeometry(QtCore.QRect(365, 537, 100, 30))    # 水平位置,垂直位置,长,高
@@ -286,6 +286,22 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print("returned age ", age)
         return age, bmi
 
+    def getBreakfast(self):
+        s = self.textEditBreakfast1.toPlainText()
+        li = s.split()
+        cai_name_li = []
+        cai_weight_li = []
+        for i in range(len(li)):
+            if i % 2 == 0:
+                cai_name_li.append(li[i])
+            else:
+                cai_weight_li.append(int(li[i][:4]))
+
+        nuBreakfast = self.csm.addYiChigetNu(cai_name_li, cai_weight_li)
+        li3 = nuBreakfast
+        breakfast_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
+        self.textEditBreakfast2.setText(breakfast_nutrition)
+
     def getLunch(self):
         age, bmi = self.defaultGoal()
         print(self.textEditLunch1.toPlainText())
@@ -304,7 +320,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
         nu_Lunch = self.csm.addYiChigetNu(cai_name_li, cai_weight_li)   # get lunch nu
         
-        li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
+        #li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
         li3 = nu_Lunch
         
         lunch_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
@@ -312,7 +328,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
 
     def getSupper(self):
-        li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
+        li1, li2, li4, li5= self.csm.getChiShenMe(7,[0,0,0,0])#li5 is for total delta
 
         supper = str('')
         for i in range(len(li1)):
