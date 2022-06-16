@@ -392,7 +392,9 @@ class ChiShenMe:
 
         nu_ChaJu = nu_Sheng - nu_YouChi     # 晚饭应吃 - 晚饭实际吃
 
-        nu_Zong = nu_YouChi + nu_YiChi
+        nu_Zong = nu_YouChi + nu_YiChi.reshape((4, 1))
+        
+        print(nu_Zong)
         
         return new_dish_name, new_res_x, nu_YouChi, nu_ChaJu, nu_Zong
         
