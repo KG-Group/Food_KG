@@ -387,7 +387,7 @@ class ChiShenMe:
 
         nu_ChaJu = nu_Sheng - nu_YouChi     # 晚饭应吃 - 晚饭实际吃
         
-        return new_dish_name, new_res_x, nu_ChaJu
+        return new_dish_name, new_res_x, nu_YouChi, nu_ChaJu
         
 
 
