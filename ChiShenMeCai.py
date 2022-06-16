@@ -321,7 +321,7 @@ class ChiShenMe:
         
         # print("dish_name:")
         # print(len(dish_name))
-        self.dish_name = self.dish_name[self.dish_name_len:]
+        self.dish_name = self.dish_name[dish_name_len:]
         # print(len(dish_name))
 
 
