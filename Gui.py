@@ -18,8 +18,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
     def setUp(self, MainWindow):
         MainWindow.setObjectName("Main Window")
-        MainWindow.resize(480, 720)
-        MainWindow.setFixedSize(480, 720) #本行为禁止窗口拉伸
+        MainWindow.resize(480, 840)
+        MainWindow.setFixedSize(480, 840) #本行为禁止窗口拉伸
         self.centralWidget = QtWidgets.QTabWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.retranslate(MainWindow)
@@ -79,16 +79,16 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
         self.labelLunch2 = QtWidgets.QLabel(self.centralWidget)
         self.labelLunch2.setGeometry(QtCore.QRect(240, 420, 250, 15))  # 水平位置,垂直位置,长,高
-        self.labelLunch2.setText("<font color=%s>%s</font>" % ('#000000', "您的早饭获取的营养是(g):"))
+        self.labelLunch2.setText("<font color=%s>%s</font>" % ('#000000', "您的午饭获取的营养是(g):"))
         self.labelLunch2.setMidLineWidth(1)
 
         self.labelSupper = QtWidgets.QLabel(self.centralWidget)
-        self.labelSupper.setGeometry(QtCore.QRect(20, 568, 250, 15))    # 水平位置,垂直位置,长,高
+        self.labelSupper.setGeometry(QtCore.QRect(20, 615, 250, 15))    # 水平位置,垂直位置,长,高
         self.labelSupper.setText("<font color=%s>%s</font>" % ('#000000', "晚饭的建议是(g)🥣:"))
         self.labelSupper.setMidLineWidth(1)
 
         self.labelSupper = QtWidgets.QLabel(self.centralWidget)
-        self.labelSupper.setGeometry(QtCore.QRect(240, 568, 250, 15))    # 水平位置,垂直位置,长,高
+        self.labelSupper.setGeometry(QtCore.QRect(240, 615, 250, 15))    # 水平位置,垂直位置,长,高
         self.labelSupper.setText("<font color=%s>%s</font>" % ('#000000', "预计晚饭获取的营养是(g):"))
         self.labelSupper.setMidLineWidth(1)
 
@@ -155,11 +155,11 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.textEditLunch2.setObjectName("textEdit")
 
         self.textEditSupper1 = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditSupper1.setGeometry(QtCore.QRect(20,588,220,125))
+        self.textEditSupper1.setGeometry(QtCore.QRect(20,635,220,110))
         self.textEditSupper1.setObjectName("textEdit")
         
         self.textEditSupper2 = QtWidgets.QTextEdit(self.centralWidget)
-        self.textEditSupper2.setGeometry(QtCore.QRect(240,588,220,125))
+        self.textEditSupper2.setGeometry(QtCore.QRect(240,635,220,110))
         self.textEditSupper2.setObjectName("textEdit")
 
         # ##button###
@@ -187,6 +187,12 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.buttonConfirm3.setObjectName("buttonConfirm3")
         self.buttonConfirm3.setText("确定")
         self.buttonConfirm3.clicked.connect(self.getLunch)
+
+        self.buttonGetSupper = QtWidgets.QPushButton(self.centralWidget)
+        self.buttonGetSupper.setGeometry(QtCore.QRect(90, 570, 300, 40))    # 水平位置,垂直位置,长,高
+        self.buttonGetSupper.setObjectName("buttonGetSupper")
+        self.buttonGetSupper.setText("  获取晚餐推荐食谱  ")
+        self.buttonGetSupper.clicked.connect(self.getSupper)
 
         # ##combo###
 
@@ -255,8 +261,6 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
 
         return self.goal
 
-    def getSupper(self):
-        pass
 
     def fun(self):
         breakfast_nutrition = "蛋白质: "+str(20.2)+"\n脂肪: "+str(10.5)+"\n胆固醇: "+str(0.02)+"\n碳水化合物: "+str(85.3)
@@ -298,26 +302,31 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print(cai_name_li)
         print(cai_weight_li)
 
-
         nu_Lunch = self.csm.addYiChigetNu(cai_name_li, cai_weight_li)   # get lunch nu
         
-        li1, li2 = self.csm.getChiShenMe(10, [20, 10, 0, 50])
+        li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
         li3 = nu_Lunch
         
+        lunch_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
+        self.textEditLunch2.setText(lunch_nutrition)
+
+
+    def getSupper(self):
+        li1, li2, li4= self.csm.getChiShenMe(10, [20, 10, 0, 50])#li4 is for total delta
+
         supper = str('')
-        lunch_nutrition = str('您摄入的营养是')
-        
         for i in range(len(li1)):
             supper += str(li1[i])
             supper += ' '
             supper += str(li2[i])[:3]
             supper += '\n'
-        self.textEditSupper.setText(supper)
+        self.textEditSupper1.setText(supper)
 
-        lunch_nutrition = "蛋白质: "+str(li3[0])[:4]+"\n脂肪: "+str(li3[1])[:4]+"\n胆固醇: "+str(li3[2])[:4]+"\n碳水化合物: "+str(li3[3])[:4]
+        supper_nutrition = "蛋白质: "+str(li4[0])[1:5]+"\n脂肪: "+str(li4[1])[1:5]+"\n胆固醇: "+str(li4[2])[1:5]+"\n碳水化合物: "+str(li4[3])[1:5]
+        self.textEditSupper2.setText(supper_nutrition)
+        
 
-        self.textEditSupper.setText(supper)
-        self.textEditLunch2.setText(lunch_nutrition)
+        
 
     def get_bmi_range(self):
         age = int(self.textEditAge.text())
