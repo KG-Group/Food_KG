@@ -385,7 +385,7 @@ class ChiShenMe:
         print(new_nu_cai)
         print(new_res_x)
         
-        return new_dish_name, new_res_x, nu_WuFan, nu_YingChi
+        return new_dish_name, new_res_x
         
 
 
