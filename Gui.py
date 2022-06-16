@@ -204,13 +204,13 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
     goal = {'age': '', 'gender': '', 'shape': '', 'health': ''}
 
     def fun2(self,i):
-        self.goal['gender'] = i
+        self.goal['gender'] = str(i).strip()
     
     def fun3(self,i):
-        self.goal['shape'] = i
+        self.goal['shape'] = str(i).strip()
 
     def fun4(self,i):
-        self.goal['health'] = i
+        self.goal['health'] = str(i).strip()
 
     def getAge(self):
         #goal = {'age':'','gender':'','shape':'','health':''}
@@ -226,8 +226,8 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         self.goal['age'] = age
         print(self.goal)
         age, bmi = self.defaultGoal()
-        csm = ChiShenMeCai.ChiShenMe(age, bmi)
-        d = csm.getNu_YingChi()
+        self.csm = ChiShenMeCai.ChiShenMe(age, bmi,self.goal['shape'],self.goal['health'])
+        d = self.csm.getNu_YingChi()
         # ought_nutrition = "热量: "+str(d[0])[:4]+"kcal\n蛋白质: "+str(d[1])[:4]+"g\n脂肪: "+str(d[2])[:4]+"g\n胆固醇: "\
         #                   +str(d[3])[:4]+"g\n碳水化合物: "+str(d[4])[:4]+"g"
         # self.textEditOught.setText(str(ought_nutrition))
@@ -285,8 +285,11 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         print(cai_name_li)
         print(cai_weight_li)
 
-        csm = ChiShenMeCai.ChiShenMe(age, bmi)
-        li1, li2, li3, d = csm.getChiShenMe(cai_name_li, cai_weight_li,10, [20, 10, 0, 50])
+
+        nu_Lunch = self.csm.addYiChigetNu(cai_name_li, cai_weight_li)   # get lunch nu
+        
+        li1, li2 = self.csm.getChiShenMe(10, [20, 10, 0, 50])
+        li3 = nu_Lunch
         
         supper = str('')
         lunch_nutrition = str('您摄入的营养是')
