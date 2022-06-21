@@ -230,7 +230,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("Main Window", "KG"))
     
-    goal = {'age': '', 'gender': '', 'shape': '', 'health': ''}
+    goal = {'age': '', 'gender': '男性', 'shape': '维持体重', 'health': '健康'}
 
     def fun2(self,i):
         self.goal['gender'] = str(i).strip()
