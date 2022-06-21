@@ -7,9 +7,10 @@ from py2neo import Node, Relationship, Graph, NodeMatcher, RelationshipMatcher
 
 class ChiShenMe:
     # cai_weight_li 中单位为 克
-    def __init__(self, age=20, bmi=20, JianKangMuBiao="", JiBing=""):
+    def __init__(self, age=20, bmi=20, gender="m", JianKangMuBiao="", JiBing=""):   # 20220621
         self.age = age
         self.bmi = bmi
+        self.gender = gender    # 20220621
         self.JianKangMuBiao = JianKangMuBiao
         self.JiBing = JiBing
         '''self.cai_name_li = cai_name_li
@@ -141,6 +142,7 @@ class ChiShenMe:
             nodes = [kcal_node],
             r_type = None
         )
+        # 20220621
         '''for i in list(nu_relation):
             if i.end_node['name'] == 'CHO（g）':
                 cho = float(type(i).__name__)
@@ -151,6 +153,7 @@ class ChiShenMe:
             elif  i.end_node['name'] == '蛋白质（g）':
                 dbz = float(type(i).__name__)'''
         
+        # 20220621
         for i in list(nu_relation):
             val = float(i['value'])
             if i.end_node['name'] == 'CHO（g）':
@@ -162,6 +165,15 @@ class ChiShenMe:
             elif  i.end_node['name'] == '蛋白质（g）':
                 dbz = val
         
+        # 20220621
+        m_f_rate = 0.95
+        if self.gender == 'f':
+            nl *= m_f_rate
+            dbz *= m_f_rate
+            zf *= m_f_rate
+            dgc *= m_f_rate
+            cho *= m_f_rate
+
         nl, dbz, zf, dgc, cho = self.changeYingChi_by_JKMBandJB(nl, dbz, zf, dgc, cho)
 
         print('cho ' + str(cho))
