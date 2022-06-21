@@ -141,7 +141,7 @@ class ChiShenMe:
             nodes = [kcal_node],
             r_type = None
         )
-        for i in list(nu_relation):
+        '''for i in list(nu_relation):
             if i.end_node['name'] == 'CHO（g）':
                 cho = float(type(i).__name__)
             elif  i.end_node['name'] == '胆固醇（mg）':
@@ -149,7 +149,18 @@ class ChiShenMe:
             elif  i.end_node['name'] == '脂肪（g）':
                 zf = float(type(i).__name__)
             elif  i.end_node['name'] == '蛋白质（g）':
-                dbz = float(type(i).__name__)
+                dbz = float(type(i).__name__)'''
+        
+        for i in list(nu_relation):
+            val = float(i['value'])
+            if i.end_node['name'] == 'CHO（g）':
+                cho = val
+            elif  i.end_node['name'] == '胆固醇（mg）':
+                dgc = val / 1000
+            elif  i.end_node['name'] == '脂肪（g）':
+                zf = val
+            elif  i.end_node['name'] == '蛋白质（g）':
+                dbz = val
         
         nl, dbz, zf, dgc, cho = self.changeYingChi_by_JKMBandJB(nl, dbz, zf, dgc, cho)
 
