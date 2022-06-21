@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIcon, QTextCharFormat, QTextCursor, QTextDocument, QPix
 import sys
 
 from py2neo import Graph, NodeMatcher, RelationshipMatcher
+from regex import F
 
 import ChiShenMeCai
 
@@ -245,8 +246,14 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         age = self.textEditAge.text()
         self.goal['age'] = age
         print(self.goal)
+        gender = ''
+        if self.goal['gender'] == '女性':
+            gender = 'f'
+        else:
+            gender = 'm'
+
         age, bmi = self.defaultGoal()
-        self.csm = ChiShenMeCai.ChiShenMe(age, bmi, self.goal['shape'], self.goal['health'])
+        self.csm = ChiShenMeCai.ChiShenMe(age, bmi, gender, self.goal['shape'], self.goal['health'])
         d = self.csm.getNu_YingChi()
         _translate = QtCore.QCoreApplication.translate
         for i in range(1, 5):
