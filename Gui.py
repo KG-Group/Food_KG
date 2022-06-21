@@ -6,7 +6,6 @@ from PyQt5.QtGui import QIcon, QTextCharFormat, QTextCursor, QTextDocument, QPix
 import sys
 
 from py2neo import Graph, NodeMatcher, RelationshipMatcher
-from regex import F
 
 import ChiShenMeCai
 
