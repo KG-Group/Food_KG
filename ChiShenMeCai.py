@@ -21,6 +21,9 @@ class ChiShenMe:
 
     def setAge(self, age):
         self.age = age
+    
+    def setGender(self, gen):
+        self.gender = gen
 
     def setBMI(self, bmi):
         self.bmi = bmi
