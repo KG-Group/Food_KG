@@ -1,6 +1,7 @@
 ﻿import xlrd
 import xlwt
-data2 = xlrd.open_workbook("./document/Oly2Menu.xls")
+from py2neo import Graph,Node,Relationship,NodeMatcher
+data2 = xlrd.open_workbook("./document/Oly2Menu614.xls")
 table2 = data2.sheets()[0]
 OlyList = []
 OlyNuList = []
@@ -31,6 +32,7 @@ for i in range(2,rowNum):
             nowDic[title[j]] = 0
     FoodList.append(nowDic)
 
+Compareresult = ''
 for i in range(0,121):
     nowRow = table2.row_values(i,start_colx = 0,end_colx = 50)
     nowRow = [item for item in nowRow if item != '']
@@ -62,6 +64,7 @@ for i in range(0,121):
         good = 0
         for Food in FoodList:
             if(name == Food["样品名称"]):
+                Compareresult = Compareresult + name + " " + Food["样品名称"] + '\n'
                 for key in title[5:86] + title[87:]:
                     NuDic[key] = NuDic[key] + Food[key]*(300/totalnum)*(int(num)/100)
                 best = 1
@@ -70,6 +73,7 @@ for i in range(0,121):
         if(best == 0):
             for Food in FoodList:
                 if(name in Food["样品名称"]):
+                    Compareresult = Compareresult + name + " " + Food["样品名称"] + '\n'
                     for key in title[5:86] + title[87:]:
                         NuDic[key] = NuDic[key] + Food[key]*(300/totalnum)*(int(num)/100)
                     good = 1
@@ -81,15 +85,16 @@ for i in range(0,121):
                 if(samechr(Food["样品名称"],name)>maxsame):
                     bestkey = Food
                     maxsame = samechr(Food,name)
+            Compareresult = Compareresult + name + " " + bestkey["样品名称"] + '\n'
             for key in title[5:86] + title[87:]:
                 NuDic[key] = NuDic[key] + bestkey[key]*(300/totalnum)*(int(num)/100)
 
 
     NuListItem.append(NuDic)
     OlyNuList.append(NuListItem)
-    print(i)
-    print(NuListItem)
-print(OlyNuList[0:3])
+    #print(i)
+    #print(NuListItem)
+#print(OlyNuList[0:3])
 
 xl = xlwt.Workbook(encoding = 'utf-8')
 sheet = xl.add_sheet("sheet1")
@@ -113,3 +118,26 @@ for item in OlyNuList:
         j+=1
     i+=1
 xl.save('./document/OlyNu.xls')
+
+graph = Graph('bolt://nas.boeing773er.site:7687')
+
+matcher = NodeMatcher(graph)
+for OlyNu in OlyNuList:
+    ONode = Node("Dish",name = OlyNu[0])
+    ONode["类型"] = OlyNu[1]
+    ONode["价格"] = OlyNu[2]
+    for key in OlyNu[3].keys():
+        ONode[key] = OlyNu[3][key]
+    graph.create(ONode)
+    graph.push(ONode)
+Compareresult = Compareresult.split('\n')
+Compareresult = list(set(Compareresult))
+print(Compareresult)
+f = open("./document/CResult.txt",'w')
+a = 0
+for item in Compareresult:
+    f.write(str(a) + ' ')
+    f.write(item)
+    f.write('\n')
+    a+=1
+f.close()
