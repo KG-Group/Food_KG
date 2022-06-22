@@ -1,42 +1,47 @@
 from py2neo import Graph, Node, NodeMatcher, Relationship, RelationshipMatcher
 import xlrd
 
+# 连接至数据库
 graph = Graph('bolt://nas.boeing773er.site:7687')
-
+# 读取excel文件
 data = xlrd.open_workbook("./document/kacl_nutri.xls")
 temp_sheet = data.sheets()[0]
+# 获取营养名
 nutri_name = temp_sheet.col_values(0, start_rowx=1, end_rowx=temp_sheet.nrows)
-print(nutri_name)
 
 upload_nutri_node = False
 if upload_nutri_node:
+# 根据营养名创建Nutrition节点
     for nutri in nutri_name:
-        GNode = Node('Nutrition', name=nutri )
+        GNode = Node('Nutrition', name=nutri)
         graph.create(GNode)
         graph.push(GNode)
-
+# 获取能量值
 kcal_list = temp_sheet.row_values(0, start_colx=1, end_colx=temp_sheet.ncols)
-print(kcal_list)
 
 upload_kcal_node = False
 if upload_kcal_node:
+# 根据能量值创建Kcal节点
     for kcal in kcal_list:
         GNode = Node('kcal', name=kcal )
         graph.create(GNode)
         graph.push(GNode)
 
-upload_nutri_kcal_edge = False
+upload_nutri_kcal_edge = True
 if upload_nutri_kcal_edge:
+# 创建requires边
     for i in range(1, temp_sheet.ncols):
         temp_col = temp_sheet.col_values(i, start_rowx=1, end_rowx=temp_sheet.nrows)
-        print(temp_col)
         kcal = kcal_list[i-1]
         matcher = NodeMatcher(graph)
+        # 查询获取kcal节点
         kcal_node = matcher.match('kcal', name=kcal).first()
         for j in range(len(nutri_name)):
+            # 查询获取Nutrition节点
             nutri_node = matcher.match('Nutrition', name=nutri_name[j]).first()
             Edge = Relationship(kcal_node, str(temp_col[j]), nutri_node)
             graph.create(Edge)
+            # 提交边
             graph.push(Edge)
 
 upload_age_node = False
@@ -145,11 +150,11 @@ if upload:
         graph.create(Edge)
         graph.push(Edge)
 
-node_matcher = NodeMatcher(graph)
-node1 = node_matcher.match("age").where(name=18).first()
-print(node1)
-matcher = RelationshipMatcher(graph)
-result = matcher.match([node1], r_type=None)
-for temp in result:
-    print(temp)
-    print(temp.labels())
+# node_matcher = NodeMatcher(graph)
+# node1 = node_matcher.match("age").where(name=18).first()
+# print(node1)
+# matcher = RelationshipMatcher(graph)
+# result = matcher.match([node1], r_type=None)
+# for temp in result:
+#     print(temp)
+#     print(temp.labels())

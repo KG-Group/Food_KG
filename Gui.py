@@ -258,7 +258,7 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         for i in range(1, 5):
             temp_item = QtWidgets.QTableWidgetItem()
             if i == 3:
-                temp_item.setText(_translate("widget", str(round(d[i], 2)) + "mg"))
+                temp_item.setText(_translate("widget", str(round(d[i]*1000, 2)) + "mg"))
             else:
                 temp_item.setText(_translate("widget", str(round(d[i], 2)) + "g"))
             self.nutri_table.setItem(0, i, temp_item)
@@ -352,14 +352,14 @@ class GUI_MainWindow(QtWidgets.QMainWindow):
         for i in range(4):
             temp_item = QtWidgets.QTableWidgetItem()
             if i == 2:
-                temp_item.setText(_translate("widget", str(round(li6[i][0], 2)) + "mg"))
+                temp_item.setText(_translate("widget", str(round(li6[i][0]*1000, 2)) + "mg"))
             else:
                 temp_item.setText(_translate("widget", str(round(li6[i][0], 2)) + "g"))
             self.nutri_result_table.setItem(0, i+1, temp_item)
         for i in range(4):
             temp_item = QtWidgets.QTableWidgetItem()
             if i == 2:
-                temp_item.setText(_translate("widget", str(round(li5[i][0], 2)) + "mg"))
+                temp_item.setText(_translate("widget", str(round(li5[i][0]*1000, 2)) + "mg"))
             else:
                 temp_item.setText(_translate("widget", str(round(li5[i][0], 2)) + "g"))
             self.nutri_result_table.setItem(1, i+1, temp_item)
