@@ -5,9 +5,10 @@ from py2neo import Node, Relationship, Graph, NodeMatcher, RelationshipMatcher
 
 class ChiShenMe:
     # 构造函数
-    def __init__(self, age=20, bmi=20, JianKangMuBiao="", JiBing=""):
+    def __init__(self, age=20, bmi=20, gender="m", JianKangMuBiao="", JiBing=""):
         self.age = age
         self.bmi = bmi
+        self.gender = gender
         self.JianKangMuBiao = JianKangMuBiao
         self.JiBing = JiBing
         '''self.cai_name_li = cai_name_li
@@ -117,14 +118,24 @@ class ChiShenMe:
         )
 
         for i in list(nu_relation):
+            val = float(i['value'])
             if i.end_node['name'] == 'CHO（g）':
-                cho = float(type(i).__name__)
+                cho = val
             elif  i.end_node['name'] == '胆固醇（mg）':
-                dgc = float(type(i).__name__) / 1000
+                dgc = val / 1000
             elif  i.end_node['name'] == '脂肪（g）':
-                zf = float(type(i).__name__)
+                zf = val
             elif  i.end_node['name'] == '蛋白质（g）':
-                dbz = float(type(i).__name__)
+                dbz = val
+        
+        # gender related
+        m_f_rate = 0.95
+        if self.gender == 'f':
+            nl *= m_f_rate
+            dbz *= m_f_rate
+            zf *= m_f_rate
+            dgc *= m_f_rate
+            cho *= m_f_rate
         
         nl, dbz, zf, dgc, cho = self.changeYingChi_by_JKMBandJB(nl, dbz, zf, dgc, cho)
 
